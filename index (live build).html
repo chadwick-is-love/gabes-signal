@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>&gt;gabes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   >gabes — evolution v15. THE SIGNAL moves to the homepage's #2 slot:
+   the daily dispatch, the heartbeat, the thing that becomes the day's
+   social post. it transmits via the pulse organism. day-aware, browse
+   the week. three colours per view, per-room figure (no white carryover).
+   ===================================================================== */
+:root{--tx:#EAF3D0;--ac:#39FF14}
+*{margin:0;padding:0;box-sizing:border-box}
+b,strong{font-weight:400}   /* the brand never uses bold — hierarchy is size + colour */
+html,body{background:#2A0A4E}
+body{font-family:"Space Mono",monospace;color:var(--tx);cursor:none;text-transform:lowercase;overflow-x:hidden}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+#scroller{position:fixed;top:0;left:0;width:100%;z-index:2;will-change:transform}
+#spacer{width:1px}
+.mark{position:fixed;top:clamp(20px,4vh,42px);left:clamp(22px,4vw,58px);z-index:5;
+  font-weight:400;font-size:clamp(15px,1.5vw,19px);letter-spacing:.02em;color:var(--tx)}
+.mark .p{color:var(--ac)}
+.tagn{position:fixed;top:clamp(20px,4vh,42px);right:clamp(22px,4vw,58px);z-index:5;font-size:11px;letter-spacing:.08em;opacity:.55;color:var(--tx);text-align:right;line-height:1.5}
+
+.sec{position:relative;width:100%;padding:0 clamp(22px,5.5vw,96px);display:flex}
+.lock{position:absolute;will-change:transform,opacity,filter}
+.t-bl{left:clamp(22px,5.5vw,96px);bottom:clamp(8vh,12vh,130px);max-width:min(52ch,90vw)}
+.t-hero{left:clamp(22px,5.5vw,96px);top:clamp(15vh,18vh,190px);max-width:min(52ch,90vw)}
+.t-tr{right:clamp(22px,5.5vw,96px);top:clamp(14vh,18vh,200px);text-align:right;max-width:min(46ch,88vw)}
+.t-tl{left:clamp(22px,5.5vw,96px);top:clamp(15vh,19vh,200px);max-width:min(52ch,90vw)}
+.t-ml{left:clamp(22px,5.5vw,96px);top:clamp(13vh,16vh,150px);max-width:min(46ch,90vw)}
+.t-cl{left:clamp(22px,5.5vw,96px);top:clamp(15vh,18vh,160px);max-width:min(58ch,92vw)}
+h1{font-family:"Outfit",sans-serif;font-weight:300;letter-spacing:-.025em;line-height:.9;color:var(--tx)}
+.xl h1{font-size:clamp(52px,9vw,150px)}
+.lg h1{font-size:clamp(42px,7.2vw,116px)}
+.md h1{font-size:clamp(34px,5vw,78px)}
+.sm h1{font-size:clamp(28px,3.6vw,56px)}
+h1 .caret{color:var(--ac);animation:blink 1.05s steps(1) infinite;display:inline-block}
+@keyframes blink{50%{opacity:0}}
+.eye{font-family:"Space Mono";font-size:clamp(10px,.92vw,12px);letter-spacing:.22em;color:var(--ac);opacity:.9;margin-bottom:1.2em}
+.sub{margin-top:clamp(16px,2.2vh,26px);font-size:clamp(12.5px,1vw,14.5px);line-height:1.55;max-width:42ch;opacity:.8}
+.t-tr .sub{margin-left:auto}
+
+/* ---------- THE SIGNAL dispatch card (precise) ---------- */
+.signal-card{position:relative}
+/* masthead — says the signal louder */
+.sig-head{display:flex;align-items:baseline;gap:.9ch;flex-wrap:wrap;
+  padding-bottom:.7em;border-bottom:1px solid color-mix(in srgb,var(--tx) 26%,transparent)}
+.sig-name{font-family:"Outfit",sans-serif;font-weight:400;font-size:clamp(24px,2.9vw,40px);letter-spacing:-.015em;color:var(--tx);
+  display:inline-flex;align-items:center;gap:.45ch}
+.sig-name .dot{width:9px;height:9px;border-radius:50%;background:var(--ac);box-shadow:0 0 11px 2px var(--ac);animation:livep 2.2s infinite}
+@keyframes livep{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.62)}}
+.sig-tag{font-size:clamp(10px,.92vw,12px);letter-spacing:.14em;opacity:.58}
+.sig-meta{margin-top:.9em;font-size:clamp(10px,.95vw,13px);letter-spacing:.12em;opacity:.72;color:var(--ac)}
+.sig-meta b{color:var(--tx);font-weight:400}.sig-meta .dt{color:var(--tx);opacity:.6}
+.sig-hook{font-family:"Outfit";font-weight:400;font-size:clamp(36px,5vw,78px);line-height:.97;letter-spacing:-.02em;margin:.42em 0 .5em;color:var(--tx)}
+.sig-a{font-size:clamp(15px,1.25vw,19px);line-height:1.5;opacity:.92;max-width:48ch}
+.sig-bottom{margin-top:1.5em;padding-top:1.1em;border-top:1px solid color-mix(in srgb,var(--tx) 26%,transparent)}
+.weekly{display:inline-flex;align-items:center;gap:.6ch;pointer-events:auto;cursor:none;font-weight:400;font-family:inherit;text-transform:lowercase;
+  font-size:clamp(14px,1.2vw,17px);color:var(--tx);text-decoration:none;
+  border:1px solid color-mix(in srgb,var(--ac) 70%,transparent);padding:.62em 1.15em;transition:background .3s,letter-spacing .3s}
+.weekly::after{content:"\2192";color:var(--ac)}
+.weekly:hover{background:color-mix(in srgb,var(--ac) 16%,transparent);letter-spacing:.02em}
+.sig-foot{margin-top:1.15em;font-size:clamp(10px,.88vw,12px);opacity:.5;letter-spacing:.03em;display:flex;gap:.7ch;flex-wrap:wrap;align-items:center}
+.sig-foot .pf{color:var(--ac);opacity:.85;text-transform:uppercase;font-size:.82em;letter-spacing:.14em}
+.sig-foot .arch{pointer-events:auto;cursor:none;color:var(--tx);opacity:.9;border-bottom:1px solid color-mix(in srgb,var(--ac) 50%,transparent)}
+
+.funnel{margin-top:1.6em}
+.flow{display:flex;flex-wrap:wrap;gap:.5em .9em;max-width:58ch}
+.flow .step{font-size:clamp(13px,1.1vw,16px);opacity:.9}
+.flow .step::after{content:" \2198";color:var(--ac);opacity:.55;margin-left:.4ch}
+.flow .step:last-child::after{content:""}
+.flow .step.tired{opacity:.6;font-style:italic}
+.toggle{margin-top:1.4em;display:inline-flex;gap:.6ch;align-items:baseline;pointer-events:auto;cursor:none;background:none;border:none;
+  font-weight:400;font-size:clamp(13px,1.1vw,15px);color:var(--ac);font-family:inherit;text-transform:lowercase}
+.toggle .x{display:inline-block;transition:transform .4s}.funnel.open .toggle .x{transform:rotate(90deg)}
+.funnel.open .tg-lbl::after{content:" (back to the mess)";opacity:.55;font-weight:400}
+.clickhead{pointer-events:auto;cursor:none;transition:opacity .25s;width:fit-content}
+.clickhead::after{content:" \2192";font-size:.4em;vertical-align:middle;color:var(--ac);opacity:.7;transition:transform .3s,opacity .3s}
+.clickhead:hover{opacity:.88}.clickhead:hover::after{transform:translateX(5px);opacity:1}
+.funnel.open ~ * .clickhead::after,.clickhead.flipped::after{opacity:.4}
+.better{max-height:0;overflow:hidden;opacity:0;transition:max-height .7s ease,opacity .6s ease}
+.funnel.open .better{max-height:300px;opacity:1;margin-top:1.4em}
+.better .cap{margin-top:1em;font-size:clamp(13px,1.05vw,15px);opacity:.78}
+
+.layers{list-style:none;margin-top:1.4em;display:flex;flex-direction:column;max-width:42ch}
+.layer{pointer-events:auto;cursor:none;padding:.46em 0;font-size:clamp(13px,1.12vw,16px);opacity:.82;display:flex;gap:1ch;align-items:baseline;
+  border-top:1px solid color-mix(in srgb,var(--tx) 16%,transparent);transition:opacity .3s,padding-left .25s}
+.layer.open{opacity:.95}
+.layer:hover,.layer.on{opacity:1;padding-left:.5em}
+.layer .n{color:var(--ac);font-size:.74em;opacity:.9;min-width:2.4ch}
+.layer .det{margin-left:auto;font-size:.78em;opacity:0;max-width:24ch;text-align:right;transition:opacity .35s}
+.layer.open .det{opacity:.62}
+.layer:hover .det,.layer.on .det{opacity:.78}
+
+/* skill library — compact category rows; deep dives open in a drawer (no scroll strain) */
+.cats{margin-top:1.6em;max-width:56ch}
+.catrow{pointer-events:auto;cursor:none;display:block;width:100%;text-align:left;background:none;border:none;color:var(--tx);
+  border-top:1px solid color-mix(in srgb,var(--tx) 18%,transparent);padding:.95em 0 1em;opacity:.85;transition:opacity .25s,padding-left .25s}
+.catrow:last-child{border-bottom:1px solid color-mix(in srgb,var(--tx) 18%,transparent)}
+.catrow:hover{opacity:1;padding-left:.5em}
+.catrow .ch{display:flex;align-items:baseline;gap:1ch}
+.catrow .ci{color:var(--ac);font-family:"Space Mono";font-size:clamp(10px,.85vw,12px);min-width:2.4ch;opacity:.85;letter-spacing:.05em}
+.catrow .cn{font-family:"Outfit",sans-serif;font-weight:400;font-size:clamp(18px,2.1vw,28px);letter-spacing:-.012em}
+.catrow .cc{margin-left:auto;font-family:"Space Mono";font-size:clamp(10px,.85vw,12px);color:var(--ac);opacity:.7;letter-spacing:.06em;white-space:nowrap}
+.catrow .cg{color:var(--ac);margin-left:.8ch;transition:transform .3s;font-size:.8em}
+.catrow:hover .cg{transform:translateX(5px)}
+.catrow .ct2{font-size:clamp(11px,.95vw,13px);opacity:.55;margin-top:.32em;padding-left:3.4ch}
+
+/* the drawer */
+#drawerScrim{position:fixed;inset:0;z-index:7;background:rgba(2,18,12,0.45);opacity:0;pointer-events:none;transition:opacity .4s}
+#drawerScrim.on{opacity:1;pointer-events:auto}
+#skillDrawer{position:fixed;top:0;right:0;height:100%;width:min(580px,94vw);z-index:8;cursor:none;
+  background:rgba(46,4,30,0.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);   /* magenta callout, minimal green */
+  border-left:1px solid color-mix(in srgb,var(--ac) 65%,transparent);box-shadow:-30px 0 80px rgba(255,45,150,0.10);
+  transform:translateX(103%);transition:transform .55s cubic-bezier(.16,1,.3,1);
+  padding:clamp(30px,6vh,60px) clamp(26px,4vw,48px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#skillDrawer.open{transform:none}
+#skillDrawer .dx{position:sticky;top:0;float:right;margin:-.4em -.4em 0 0;pointer-events:auto;cursor:none;
+  background:none;border:1px solid color-mix(in srgb,var(--ac) 55%,transparent);color:var(--ac);
+  font-family:"Space Mono";font-size:clamp(11px,1vw,13px);letter-spacing:.1em;text-transform:lowercase;padding:.5em .9em;transition:background .25s}
+#skillDrawer .dx:hover{background:color-mix(in srgb,var(--ac) 20%,transparent)}
+#skillDrawer .dhint{font-family:"Space Mono";font-size:clamp(10px,.85vw,12px);letter-spacing:.08em;color:var(--ac);opacity:.5;margin-top:2.2em}
+#skillDrawer .deye{font-family:"Space Mono";font-size:clamp(10px,.9vw,12px);letter-spacing:.18em;color:var(--ac);opacity:.85;margin-bottom:1em}
+#skillDrawer .dhead{font-family:"Outfit",sans-serif;font-weight:400;font-size:clamp(24px,3.4vw,40px);letter-spacing:-.015em;line-height:1.02;padding-right:2ch}
+#skillDrawer .dtag{font-size:clamp(12px,1vw,14px);opacity:.6;margin:.5em 0 1.7em;padding-bottom:1.3em;border-bottom:1px solid color-mix(in srgb,var(--tx) 18%,transparent)}
+
+/* taste layer — the comparison (deck-style panels: top hairline, clear hierarchy) */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5.5vw,84px);margin-top:2.3em;max-width:920px}
+.cmp .col{border-top:1px solid color-mix(in srgb,var(--ac) 55%,transparent);padding-top:1.2em}
+.cmp .bad{border-top-color:color-mix(in srgb,var(--tx) 20%,transparent)}     /* the weak one stays quiet */
+.cmp .cmp-h{font-family:"Space Mono";font-weight:400;font-size:clamp(11px,.95vw,13px);letter-spacing:.16em;margin-bottom:1.1em}
+.cmp .bad .cmp-h{color:var(--tx);opacity:.42}
+.cmp .good .cmp-h{color:var(--ac)}
+.cmp p{font-size:clamp(14px,1.2vw,17px);line-height:1.55}
+/* simple: it says / we say. both readable; the words do the work */
+.cmp .bad p{opacity:.7}
+.cmp .good p{opacity:.97;margin-bottom:.7em}
+.cmp .good p .p{color:var(--ac);margin-right:.45ch;font-weight:400}
+@media(max-width:680px){.cmp{grid-template-columns:1fr;gap:1.7em}}
+
+/* greatest hits — the field archive */
+.hits{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(28px,4vw,60px);margin-top:1.7em;max-width:64ch}
+.hit{pointer-events:auto;cursor:none;padding:.62em 0;border-top:1px solid color-mix(in srgb,var(--tx) 15%,transparent);transition:padding-left .25s}
+.hit:hover{padding-left:.4em}
+.hit .ht{font-family:"Outfit",sans-serif;font-weight:400;font-size:clamp(15px,1.45vw,20px);letter-spacing:-.01em;color:var(--tx);opacity:.9;transition:color .25s,opacity .25s}
+.hit:hover .ht{color:var(--ac);opacity:1}
+.hit .hd{font-family:"Space Mono";font-size:clamp(11px,.95vw,13px);line-height:1.5;opacity:0;max-height:0;overflow:hidden;transition:opacity .3s ease,max-height .35s ease,margin-top .3s}
+.hit:hover .hd{opacity:.62;max-height:72px;margin-top:.35em}
+@media(max-width:680px){.hits{grid-template-columns:1fr}.hit .hd{opacity:.55;max-height:72px;margin-top:.3em}}
+
+/* work with us — name the mess; the organism resolves it as you type */
+.messform{margin-top:1.9em;max-width:54ch}
+.mlabel{font-family:"Space Mono";font-size:clamp(10px,.85vw,12px);letter-spacing:.14em;color:var(--ac);opacity:.9;margin-bottom:.8em}
+.messform textarea{width:100%;background:none;border:none;border-bottom:1px solid color-mix(in srgb,var(--ac) 55%,transparent);
+  color:var(--tx);font-family:"Space Mono";font-size:clamp(15px,1.3vw,18px);line-height:1.5;padding:.5em 0 .6em;resize:none;text-transform:lowercase;caret-color:var(--ac);transition:border-color .3s}
+.messform textarea:focus{outline:none;border-bottom-color:var(--ac)}
+.messform textarea::placeholder{color:var(--tx);opacity:.42}
+.mrow{display:flex;gap:clamp(18px,3vw,40px);align-items:center;margin-top:1.4em;flex-wrap:wrap}
+.mrow .go{color:#fff;border-bottom-color:rgba(255,255,255,.5)}.mrow .go::before{color:#fff;opacity:.7}
+.messform .submit{pointer-events:auto;cursor:none;background:none;border:1px solid var(--ac);color:var(--ac);font-family:"Space Mono";
+  font-size:clamp(13px,1.1vw,15px);padding:.62em 1.25em;text-transform:lowercase;transition:background .3s,letter-spacing .3s}
+.messform .submit:hover{background:color-mix(in srgb,var(--ac) 20%,transparent);letter-spacing:.02em}
+.messform .okmsg{margin-top:1.2em;color:var(--ac);font-size:clamp(14px,1.2vw,17px);opacity:0;height:0;overflow:hidden;transition:opacity .45s}
+.messform.done .mrow{display:none}
+.messform.done .okmsg{opacity:1;height:auto}
+@media(max-width:600px){.messform .submit{cursor:pointer}}
+.cat-body{max-height:0;overflow:hidden;transition:max-height .55s ease}
+.cat.open .cat-body{max-height:1100px}
+.skill{padding:.78em 0 .9em;border-top:1px solid color-mix(in srgb,var(--tx) 12%,transparent)}
+.skill-row{display:flex;align-items:baseline;gap:1ch}
+.snum{font-family:"Space Mono";color:var(--ac);opacity:.85;font-size:clamp(10px,.82vw,12px);min-width:2.4ch;letter-spacing:.06em}
+.sn{font-family:"Outfit",sans-serif;font-weight:400;font-size:clamp(17px,1.7vw,23px);letter-spacing:-.012em;line-height:1.04;color:var(--tx)}
+.sd{font-family:"Space Mono";font-size:clamp(12px,1vw,14px);opacity:.6;line-height:1.5;margin:.38em 0 0 3.4ch;max-width:60ch}
+.sprod{font-family:"Space Mono";font-size:clamp(11px,.92vw,13px);margin:.42em 0 0 3.4ch;color:var(--ac);opacity:.9;letter-spacing:.01em}
+.sprod::before{content:"\2192  ";opacity:.75}
+
+#cursor{position:fixed;top:0;left:0;z-index:6;pointer-events:none;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;
+  border-radius:50%;background:var(--ac);box-shadow:0 0 0 1px var(--ac),0 0 12px 2px var(--ac);mix-blend-mode:screen;transition:transform .1s}
+#hint{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:5;font-size:10px;letter-spacing:.24em;opacity:.5;color:var(--tx);transition:opacity .5s}
+#hint .p{color:var(--ac)}
+@media(max-width:600px){body{cursor:auto}#cursor{display:none}.toggle,.layer,.weekly,.arch,.clickhead,.catrow,#skillDrawer .dx{cursor:pointer}.t-tr{text-align:left;left:clamp(22px,5.5vw,96px);right:auto}.layer .det{display:none}}
+#skillDrawer{cursor:none}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="mark"><span class="p">&gt;</span>gabes</div>
+<div class="tagn"><span id="secname">surface</span><br><span id="secidx">01</span></div>
+
+<div id="scroller">
+  <!-- 01 hero -->
+  <section class="sec xl" data-sec="0" style="min-height:116vh">
+    <div class="lock t-hero" data-depth="1">
+      <h1>we humanize<br>intelligence.<span class="caret">_</span></h1>
+      <div class="sub">a public intelligence layer for people trying to remain useful in an ai-shaped economy.</div>
+    </div>
+  </section>
+
+  <!-- 02 THE SIGNAL — the daily dispatch -->
+  <section class="sec" data-sec="1" style="min-height:158vh">
+    <div class="lock t-cl" data-depth="1.05">
+      <div class="signal-card">
+        <div class="sig-head">
+          <span class="sig-name"><span class="dot"></span>the signal</span>
+          <span class="sig-tag">one a day · monday to friday</span>
+        </div>
+        <div class="sig-meta"><b id="sig-day">tuesday</b> · <span id="sig-cat">the gift</span> <span class="dt">· <span id="sig-date"></span></span></div>
+        <h1 class="sig-hook" id="sig-hook">“i thought you had it” is not a workflow.</h1>
+        <p class="sig-a" id="sig-a">it is where revenue goes to die quietly.</p>
+        <div class="sig-bottom">
+          <a class="weekly" href="#">read the weekly letter</a>
+        </div>
+        <div class="sig-foot">
+          today's signal also ships as the day's post: <span class="pf">in</span><span class="pf">ig</span><span class="pf">tt</span><span class="pf">fb</span>
+          &nbsp;·&nbsp; <a class="arch" href="#">past signals &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 the problem -->
+  <section class="sec lg" data-sec="2" style="min-height:138vh">
+    <div class="lock t-tr" data-depth="1.15">
+      <div class="eye">// the problem</div>
+      <h1>the tools arrived.<br>the work got<br>stranger.</h1>
+      <div class="sub">between the crm, the inbox, the dashboard, and the person named kyle who "usually handles that," the business went modern on the surface and started leaking underneath.</div>
+    </div>
+  </section>
+
+  <!-- 04 the funnel -->
+  <section class="sec md" data-sec="3" style="min-height:155vh">
+    <div class="lock t-tl" data-depth="1.1">
+      <div class="eye">// a brief tour of bad ai decisions</div>
+      <h1 id="funnelHead" class="clickhead">ai funnel<br>of death.</h1>
+      <div class="funnel" id="funnel">
+        <div class="flow">
+          <span class="step">saw a demo</span><span class="step">bought three tools</span><span class="step">connected none of them</span>
+          <span class="step">built a dashboard</span><span class="step">forgot the dashboard</span><span class="step">added a chatbot</span>
+          <span class="step">called it transformation</span><span class="step">still pastes screenshots into slack</span><span class="step tired">everyone is tired</span>
+        </div>
+        <button class="toggle" id="funnelToggle" aria-expanded="false"><span class="x">&gt;</span> <span class="tg-lbl">click: show the other way</span></button>
+        <div class="better">
+          <div class="flow">
+            <span class="step">fewer tools</span><span class="step">clear ownership</span><span class="step">automation that removes work</span>
+            <span class="step">cleaner handoffs</span><span class="step">follow-up that happens</span><span class="step">less founder drag</span>
+            <span class="step">systems people open on purpose</span>
+          </div>
+          <div class="cap">same budget. only one of these compounds.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 the operating layer -->
+  <section class="sec sm" data-sec="4" style="min-height:178vh">
+    <div class="lock t-ml" data-depth="1.05">
+      <div class="eye">// the operating layer</div>
+      <h1>the work breaks in the<br>spaces between tools.<br>that's where we build.</h1>
+      <ul class="layers" id="layers">
+        <li class="layer" data-l="0"><span class="n">01</span>intake<span class="det">leads stop arriving as mysteries.</span></li>
+        <li class="layer" data-l="1"><span class="n">02</span>signal<span class="det">the team reacts to what matters, not what's loud.</span></li>
+        <li class="layer" data-l="2"><span class="n">03</span>diagnosis<span class="det">work stops feeling vaguely broken.</span></li>
+        <li class="layer" data-l="3"><span class="n">04</span>system design<span class="det">the stack finally fits the business.</span></li>
+        <li class="layer" data-l="4"><span class="n">05</span>build<span class="det">the work moves while people sleep.</span></li>
+        <li class="layer" data-l="5"><span class="n">06</span>training<span class="det">people use it on purpose.</span></li>
+        <li class="layer" data-l="6"><span class="n">07</span>adoption<span class="det">the new way becomes the only way.</span></li>
+        <li class="layer" data-l="7"><span class="n">08</span>maintenance<span class="det">fewer surprises with your name on them.</span></li>
+        <li class="layer" data-l="8"><span class="n">09</span>measurement<span class="det">you can tell if it's working without faith.</span></li>
+        <li class="layer" data-l="9"><span class="n">10</span>iteration<span class="det">it keeps fitting as the business moves.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 06 the skill library -->
+  <section class="sec sm" data-sec="5" style="min-height:135vh">
+    <div class="lock t-ml" data-depth="1.05">
+      <div class="eye">// the skill library — nineteen installable skills</div>
+      <h1>install once.<br>ask in plain language.<br>the work comes back done.</h1>
+      <div class="sub">a skill carries the expertise. built from real client work, white-labelable, runs the same way every time. open a category.</div>
+      <div class="cats" id="cats"></div>
+    </div>
+  </section>
+
+  <!-- 07 the taste layer -->
+  <section class="sec sm" data-sec="6" style="min-height:165vh">
+    <div class="lock t-tl" data-depth="1.05">
+      <div class="eye">// the taste layer</div>
+      <h1>ai without taste<br>is just faster spam.</h1>
+      <div class="sub">most ai teaches output. we teach the part nobody else does: discernment. here is the same brief, twice.</div>
+      <div class="cmp">
+        <div class="col bad">
+          <div class="cmp-h">what it says</div>
+          <p>"in today's fast-paced landscape, leveraging cutting-edge ai unlocks synergies and drives scalable growth for your business."</p>
+        </div>
+        <div class="col good">
+          <div class="cmp-h">what we say</div>
+          <p><span class="p">&mdash;</span> says nothing. no claim, no proof, no reader in mind.</p>
+          <p><span class="p">&mdash;</span> delete it. start from the operator's real problem.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 greatest hits -->
+  <section class="sec sm" data-sec="7" style="min-height:165vh">
+    <div class="lock t-tl" data-depth="1.05">
+      <div class="eye">// greatest hits — the field archive</div>
+      <h1>things we keep<br>finding inside businesses.</h1>
+      <div class="sub">ten patterns. different industries, same wreckage. hover one.</div>
+      <div class="hits" id="hits"></div>
+    </div>
+  </section>
+
+  <!-- 09 work with us -->
+  <section class="sec sm" data-sec="8" style="min-height:170vh">
+    <div class="lock t-tl" data-depth="1.05">
+      <div class="eye">// work with gabes</div>
+      <h1>bring us the part<br>everyone works around.</h1>
+      <div class="sub">we turn the useful parts into systems people actually use. no theatre, no tool worship, no strategy fog machine.</div>
+      <form class="messform" id="messform" novalidate>
+        <div class="mlabel">name the mess</div>
+        <textarea id="messin" rows="2" placeholder="the half-working funnel. the founder's memory. the tool stack with a drinking problem..."></textarea>
+        <div class="mrow">
+          <button class="submit" type="submit">start the operating review</button>
+          <a class="go" href="#">or just talk to a human</a>
+        </div>
+        <div class="okmsg">good. that is where we start — we find the system inside it.</div>
+      </form>
+    </div>
+  </section>
+</div>
+<div id="spacer"></div>
+
+<div id="drawerScrim"></div>
+<aside id="skillDrawer" aria-hidden="true">
+  <button class="dx" id="drawerClose" aria-label="close">close &times;</button>
+  <div class="deye">// the skill library</div>
+  <div class="dhead"></div>
+  <div class="dtag"></div>
+  <div id="drawerBody"></div>
+  <div class="dhint">click anywhere to close</div>
+</aside>
+
+<div id="cursor"></div>
+<div id="hint"><span class="p">&gt;</span> fall</div>
+
+<script>
+"use strict";
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W,H,DPR;
+
+/* room order: hero -> SIGNAL -> problem -> funnel -> operating */
+const ROOMS=[
+  { name:"surface", light:[166,83,242], mid:[122,38,201], deep:[40,9,74],  fig:[234,243,208], ac:[57,255,20],
+    node:{x:0.76,y:0.40,s:0.95}, order:0, pulse:0, typeLeft:true },
+  { name:"the signal", light:[255,110,170], mid:[190,28,100], deep:[36,4,22], fig:[255,226,238], ac:[90,255,180],
+    node:{x:0.78,y:0.46,s:0.95}, order:0, pulse:1, typeLeft:true },     // rose · transmits
+  { name:"the problem", light:[255,182,86], mid:[224,99,26], deep:[42,17,6], fig:[24,9,44], ac:[0,232,255],
+    node:{x:0.26,y:0.56,s:1.05}, order:0, pulse:0, typeLeft:false },
+  { name:"the funnel", light:[255,72,98], mid:[181,16,46], deep:[38,4,13], fig:[255,232,206], ac:[255,222,40],
+    node:{x:0.54,y:0.64,s:0.88}, order:0, pulse:0, typeLeft:true },
+  { name:"the operating layer", light:[90,240,230], mid:[0,188,198], deep:[2,52,58], fig:[8,32,36], ac:[255,90,30],
+    node:{x:0.5,y:0.5,s:1.1}, order:0.8, pulse:0, cluster:0, typeLeft:true },
+  { name:"the skill library", light:[72,222,150], mid:[16,140,96], deep:[4,40,28], fig:[230,246,236], ac:[255,45,150],
+    node:{x:0.68,y:0.5,s:1.0}, order:0, pulse:0, cluster:1, split:0, typeLeft:true },   // emerald · hot magenta accent · 4 clusters
+  { name:"the taste layer", light:[158,34,106], mid:[92,14,62], deep:[28,4,22], fig:[244,240,238], ac:[176,255,72],
+    node:{x:0.5,y:0.5,s:1.0}, order:0, pulse:0, cluster:0, split:1, scatter:0, typeLeft:true },   // wine · acid-green · splits messy<->clean
+  { name:"greatest hits", light:[206,255,44], mid:[140,190,12], deep:[34,52,2], fig:[22,12,40], ac:[230,30,140],
+    node:{x:0.5,y:0.5,s:1.0}, order:0, pulse:0, cluster:0, split:0, scatter:1, typeLeft:true },   // acid lime · ink · magenta · teeming evidence wall
+  { name:"work with us", light:[246,68,150], mid:[198,22,106], deep:[50,5,30], fig:[255,244,249], ac:[78,128,255],
+    node:{x:0.74,y:0.40,s:0.72}, order:0, pulse:0, cluster:0, split:0, scatter:0, resolve:1, typeLeft:true },   // rich pink · near-white · blue · the mess resolves as you type
+];
+const NR=ROOMS.length;
+const lerp=(a,b,t)=>a+(b-a)*t,clamp=(v,a,b)=>v<a?a:v>b?b:v,smooth=t=>t*t*(3-2*t);
+const rgb=a=>`${a[0]|0},${a[1]|0},${a[2]|0}`,mix=(a,b,t)=>[lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t)];
+
+/* ---- the week of signals (from the headlines file) ---- */
+// one hook. one knife. the fix is in the letter. no setup, no teaching.
+const SIGNALS=[
+  {day:"monday",   cat:"the warning",  hook:"your voice is now a password.",
+   line:"thirty seconds of you on a podcast is enough to empty an account in your name."},
+  {day:"tuesday",  cat:"the gift",     hook:"“i thought you had it” is not a workflow.",
+   line:"it is where revenue goes to die quietly."},
+  {day:"wednesday",cat:"the roast",    hook:"it will summarize the meeting you were already in.",
+   line:"it automated the whole meeting except the part where someone does the work."},
+  {day:"thursday", cat:"the market",   hook:"your next hire does not need a desk.",
+   line:"the agents are becoming staff. the winners already chose which decisions a machine gets to own."},
+  {day:"friday",   cat:"the wide net", hook:"you do not have an ai problem. you have a spreadsheet problem.",
+   line:"the business still runs on memory, meetings, and one tired person nobody put on the org chart."},
+];
+
+const m={x:-9999,y:-9999,has:false};
+const dot=document.getElementById('cursor');
+addEventListener('mousemove',e=>{m.x=e.clientX;m.y=e.clientY;m.has=true;dot.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;});
+addEventListener('mouseleave',()=>m.has=false);
+addEventListener('touchmove',e=>{const t=e.touches[0];if(t){m.x=t.clientX;m.y=t.clientY;m.has=true;}},{passive:true});
+
+let HOVL=-1, HOVC=-1, rings=[], lastRing=0, RESOLVE=0, RTARGET=0;
+
+const scroller=document.getElementById('scroller'),spacer=document.getElementById('spacer');
+const sections=[...document.querySelectorAll('.sec')],locks=[...document.querySelectorAll('.lock')];
+let OFF=[],smoothY=0,rawY=0;
+function measure(){spacer.style.height=scroller.offsetHeight+'px';OFF=sections.map(s=>({top:s.offsetTop,h:s.offsetHeight}));}
+function onScroll(){rawY=scrollY;document.getElementById('hint').style.opacity=rawY>6?0:.5;}
+addEventListener('scroll',onScroll,{passive:true});
+
+const N=(innerWidth<700?150:230);
+let P=[],dust=[];
+function build(){
+  const cx0=W*ROOMS[0].node.x, cy0=H*ROOMS[0].node.y, base=Math.min(W,H);
+  P=[];
+  for(let i=0;i<N;i++){
+    const a=Math.random()*6.283, rr=Math.pow(Math.random(),0.7), rad=base*0.30*(0.15+rr*0.55);
+    P.push({x:cx0+Math.cos(a)*rad, y:cy0+Math.sin(a)*rad, vx:0, vy:0,
+      rOff:0.25+Math.random()*0.7, ph:Math.random()*6.283, depth:Math.random(),
+      acc:Math.random()<0.12, energy:0, layer:i%10, lx:0.52+Math.random()*0.42, ljit:Math.random()*6.283, cat:i%4, catIdx:0, catTot:1, side:i%2, sideIdx:0, sideTot:1, seed:Math.random(), seed2:Math.random()});
+  }
+  // even ordinals: per-category (cluster rings) and per-side (taste split)
+  const cn=[0,0,0,0]; for(const p of P)p.catIdx=cn[p.cat]++; for(const p of P)p.catTot=cn[p.cat];
+  const sd=[0,0]; for(const p of P)p.sideIdx=sd[p.side]++; for(const p of P)p.sideTot=sd[p.side];
+  dust=Array.from({length:innerWidth<700?24:44},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random(),r:Math.random()*1.3+0.3}));
+}
+function size(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+  cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);build();measure();}
+addEventListener('resize',()=>{size();onScroll();});
+
+function surface(){
+  for(const el of locks){const r=el.getBoundingClientRect();const c=r.top+r.height/2;
+    const rel=(c-H*0.5)/H,ad=Math.abs(rel);
+    const target=smooth(clamp(1-(ad-0.42)/0.40,0,1));      // wider readable band
+    el._op=(el._op===undefined)?target:el._op+(target-el._op)*0.055;
+    const op=el._op,depth=+(el.dataset.depth||1);
+    const ty=rel*20*depth+(1-op)*40,bl=(1-op)*2.4,sc=lerp(0.975,1,op);   // gentler blur — stays readable
+    el.style.opacity=op;el.style.transform=`translate3d(0,${ty}px,0) scale(${sc})`;
+    el.style.filter=bl>0.12?`blur(${bl}px)`:'none';}
+}
+
+function loop(now){
+  smoothY+=(rawY-smoothY)*0.10;
+  scroller.style.transform=`translate3d(0,${-smoothY}px,0)`;
+
+  const focus=smoothY+H*0.5;let i=0;for(let k=0;k<NR;k++){if(focus<OFF[k].top+OFF[k].h||k===NR-1){i=k;break;}}
+  const local=clamp((focus-OFF[i].top)/OFF[i].h,0,1);
+  const hasNext=i<NR-1,blendT=hasNext?smooth(clamp((local-0.70)/0.22,0,1)):0,j=hasNext?i+1:i;
+  const A=ROOMS[i],B=ROOMS[j];
+  const light=mix(A.light,B.light,blendT),midC=mix(A.mid,B.mid,blendT),deep=mix(A.deep,B.deep,blendT),
+        fig=mix(A.fig,B.fig,blendT),ac=mix(A.ac,B.ac,blendT);
+  const figS=rgb(fig),acS=rgb(ac);
+  const nx=lerp(A.node.x,B.node.x,blendT),ny=lerp(A.node.y,B.node.y,blendT),nsc=lerp(A.node.s,B.node.s,blendT);
+  const order=lerp(A.order||0,B.order||0,blendT), pulse=lerp(A.pulse||0,B.pulse||0,blendT), clus=lerp(A.cluster||0,B.cluster||0,blendT), split=lerp(A.split||0,B.split||0,blendT), scatter=lerp(A.scatter||0,B.scatter||0,blendT), resolveR=lerp(A.resolve||0,B.resolve||0,blendT);
+  RESOLVE+=(RTARGET-RESOLVE)*0.06;
+  const TL=(blendT<0.5?A:B).typeLeft;
+  document.getElementById('secname').textContent=(blendT<0.5?A.name:B.name);
+  document.getElementById('secidx').textContent=String((blendT<0.5?i:j)+1).padStart(2,'0');
+  const rs=document.documentElement.style; rs.setProperty('--tx',`rgb(${figS})`); rs.setProperty('--ac',`rgb(${acS})`);
+
+  const lsx=W*(0.30+nx*0.4), lsy=H*0.30;
+  ctx.globalCompositeOperation='source-over';
+  const g=ctx.createRadialGradient(lsx,lsy,0,lsx,lsy,Math.max(W,H)*0.92);
+  g.addColorStop(0,`rgb(${rgb(light)})`);g.addColorStop(0.5,`rgb(${rgb(midC)})`);g.addColorStop(1,`rgb(${rgb(deep)})`);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+
+  ctx.lineWidth=1;
+  for(let w=0;w<6;w++){const yb=H*(0.16+w*0.14);
+    ctx.strokeStyle=`rgba(${figS},${0.045+(w%2?0.02:0)})`;ctx.beginPath();
+    for(let x=0;x<=W;x+=24){const y=yb+Math.sin(x*0.0030+now*0.00011+w*0.7)*24+Math.sin(x*0.0085+now*0.00018)*7;
+      x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();}
+
+  ctx.globalCompositeOperation='lighter';
+  const blo=ctx.createRadialGradient(lsx,lsy,0,lsx,lsy,Math.min(W,H)*0.42);
+  blo.addColorStop(0,`rgba(${rgb(light)},0.06)`);blo.addColorStop(1,`rgba(${rgb(light)},0)`);
+  ctx.fillStyle=blo;ctx.fillRect(0,0,W,H);
+
+  ctx.globalCompositeOperation='source-over';ctx.fillStyle=`rgba(${figS},0.12)`;ctx.beginPath();
+  for(const d of dust){const fall=(d.y - smoothY*(0.04+d.z*0.12))%H,yy=fall<0?fall+H:fall;ctx.rect(d.x,yy,d.r,d.r);}
+  ctx.fill();
+
+  // ---- transmission rings: auto-emit while in the signal room ----
+  if(pulse>0.4 && now-lastRing>4600){rings.push(now);lastRing=now;}
+  for(let r=rings.length-1;r>=0;r--){if(now-rings[r]>3400)rings.splice(r,1);}
+
+  const cx=W*nx + Math.sin(now*0.00015)*W*0.02, cy=H*ny - smoothY*0.022 + Math.cos(now*0.00012)*H*0.02;
+  const base=Math.min(W,H), R=base*0.30*nsc*(1+Math.sin(now*0.0005)*0.06);
+  const curR=base*0.26, MAX=2.4, free=1-order;
+  const top=H*0.26, bot=H*0.80;
+  for(const p of P){
+    let dx=p.x-cx, dy=p.y-cy, dist=Math.hypot(dx,dy)||0.001, ux=dx/dist, uy=dy/dist;
+    p.depth=0.5+0.5*Math.sin(now*0.0003+p.ph);
+    let energy=0;
+    if(free>0.01){
+      const targetR=R*(0.35+p.rOff*(1+Math.sin(now*0.0004+p.ph)*0.3));
+      const radial=(targetR-dist)*0.0011*free;
+      p.vx+=ux*radial; p.vy+=uy*radial;
+      p.vx+=-uy*0.016*free; p.vy+=ux*0.016*free;
+      const fa=Math.sin(p.x*0.0034+now*0.00018)+Math.cos(p.y*0.0034-now*0.00015);
+      p.vx+=Math.cos(fa*3.14159)*0.05*free; p.vy+=Math.sin(fa*3.14159)*0.05*free;
+    }
+    if(order>0.01){
+      // strata that keep breaking up: looser pull, wider drift, ragged bands
+      const ly=top+(p.layer+0.5)/10*(bot-top)+Math.sin(now*0.0007+p.ph)*16;
+      const lxp=W*(0.5+(p.lx-0.5)*1.06)+Math.sin(now*0.0005+p.ljit)*42;
+      p.vx+=(lxp-p.x)*0.017*order; p.vy+=(ly-p.y)*0.024*order;
+    }
+    if(clus>0.01){    // four category clusters — floating, drifting, trippy
+      const cgx=[0.56,0.84,0.56,0.84][p.cat], cgy=[0.34,0.32,0.70,0.72][p.cat];
+      const dx2=Math.sin(now*0.00022+p.cat*1.7)*W*0.055, dy2=Math.cos(now*0.00018+p.cat*2.1)*H*0.07;
+      const ccx=W*cgx+dx2+Math.cos(p.ph*1.4+now*0.00042)*W*0.06;
+      const ccy=H*cgy+dy2+Math.sin(p.ph*1.1+now*0.00036)*H*0.085;
+      p.vx+=(ccx-p.x)*0.011*clus; p.vy+=(ccy-p.y)*0.011*clus;   // loose pull = floaty
+    }
+    if(split>0.01){    // taste: messy generic on the left, clean judgment resolving on the right
+      if(p.side===1){   // clean: a tidy bright ring on the right
+        const a=p.sideIdx/Math.max(1,p.sideTot)*6.283 + now*0.00011;
+        const fr=Math.min(W,H)*0.20, wob=0.85+0.15*Math.sin(now*0.0006+p.ph);
+        const tx=W*0.72+Math.cos(a)*fr*wob, ty=H*0.46+Math.sin(a)*fr*wob*0.92;
+        p.vx+=(tx-p.x)*0.03*split; p.vy+=(ty-p.y)*0.03*split;
+        if(split>0.4){const e=0.55+0.2*Math.sin(now*0.0018+p.ph); if(e>energy)energy=e;}
+      } else {          // messy: chaotic churn on the left
+        p.vx+=(W*0.27-p.x)*0.004*split + Math.sin(now*0.0026+p.ph*3)*0.55*split;
+        p.vy+=(H*0.5 -p.y)*0.004*split + Math.cos(now*0.0031+p.ph*2)*0.55*split;
+      }
+    }
+    if(resolveR>0.01 && RESOLVE>0.01){    // work-with-us: the mess resolves into a clean system as you type
+      const a=p.sideIdx/Math.max(1,p.sideTot)*6.283 + now*0.0001;
+      const fr=Math.min(W,H)*0.20, wob=0.85+0.15*Math.sin(now*0.0006+p.ph);
+      const tx=W*0.74+Math.cos(a)*fr*wob, ty=H*0.42+Math.sin(a)*fr*wob*0.92, k=0.03*resolveR*RESOLVE;
+      p.vx+=(tx-p.x)*k; p.vy+=(ty-p.y)*k;
+      if(p.acc){const e=0.5*resolveR*RESOLVE; if(e>energy)energy=e;}
+    }
+    if(scatter>0.01){    // greatest hits: a teeming evidence wall across the right
+      const tx=W*(0.40+p.seed*0.56)+Math.sin(now*0.0009+p.ph*2)*W*0.04;
+      const ty=H*(0.16+p.seed2*0.72)+Math.cos(now*0.0011+p.ph)*H*0.05;
+      p.vx+=(tx-p.x)*0.012*scatter; p.vy+=(ty-p.y)*0.012*scatter;
+      if(scatter>0.4 && p.acc){const e=0.5+0.3*Math.sin(now*0.0022+p.ph); if(e>energy)energy=e;}
+    }
+    if(pulse>0.01 && rings.length){
+      for(const rt of rings){const rr=(now-rt)*0.34, fade=1-(now-rt)/3400;
+        const near=1-clamp(Math.abs(dist-rr)/(base*0.06),0,1);
+        if(near>0){ p.vx+=ux*near*1.4*pulse*fade; p.vy+=uy*near*1.4*pulse*fade;
+          const e=near*0.8*pulse*fade; if(e>energy)energy=e; }}
+    }
+    if(m.has){const ex=p.x-m.x,ey=p.y-m.y,ed=Math.hypot(ex,ey);
+      if(ed<curR){const ce=1-ed/curR,f=ce*ce*1.7;
+        p.vx+=ex/(ed||1)*f; p.vy+=ey/(ed||1)*f; p.vx+=-ey/(ed||1)*ce*0.9; p.vy+=ex/(ed||1)*ce*0.9;
+        if(ce>energy)energy=ce;}}
+    if(order>0.4 && HOVL>=0 && p.layer===HOVL) energy=Math.max(energy,0.85);
+    if(clus>0.4 && HOVC>=0 && p.cat===HOVC) energy=Math.max(energy,0.8);
+    p.energy=energy;
+    p.vx*=0.93; p.vy*=0.93;
+    const sp=Math.hypot(p.vx,p.vy); if(sp>MAX){p.vx=p.vx/sp*MAX; p.vy=p.vy/sp*MAX;}
+    p.x+=p.vx; p.y+=p.vy;
+  }
+
+  const D=base*0.12, D2=D*D, accPairs=[];
+  ctx.globalCompositeOperation='source-over';ctx.lineWidth=1;
+  ctx.strokeStyle=`rgba(${figS},0.14)`;ctx.beginPath();
+  for(let a=0;a<N;a++){const Ap=P[a];
+    for(let b=a+1;b<N;b++){const Bp=P[b];const ddx=Ap.x-Bp.x,ddy=Ap.y-Bp.y,d2=ddx*ddx+ddy*ddy;
+      if(d2<D2){ if(Ap.energy>0.08||Bp.energy>0.08){accPairs.push(a,b);} else {ctx.moveTo(Ap.x,Ap.y);ctx.lineTo(Bp.x,Bp.y);} }}}
+  ctx.stroke();
+  if(accPairs.length){ctx.strokeStyle=`rgba(${acS},0.5)`;ctx.beginPath();
+    for(let q=0;q<accPairs.length;q+=2){const Ap=P[accPairs[q]],Bp=P[accPairs[q+1]];ctx.moveTo(Ap.x,Ap.y);ctx.lineTo(Bp.x,Bp.y);}ctx.stroke();}
+
+  ctx.fillStyle=`rgba(${figS},0.32)`;ctx.beginPath();
+  for(const p of P){if(p.acc||p.energy>0.3||p.depth>=0.55)continue;const r=0.7+p.depth*1.7;ctx.moveTo(p.x+r,p.y);ctx.arc(p.x,p.y,r,0,6.283);}ctx.fill();
+  ctx.fillStyle=`rgba(${figS},0.62)`;ctx.beginPath();
+  for(const p of P){if(p.acc||p.energy>0.3||p.depth<0.55)continue;const r=0.7+p.depth*1.7;ctx.moveTo(p.x+r,p.y);ctx.arc(p.x,p.y,r,0,6.283);}ctx.fill();
+  ctx.fillStyle=`rgba(${acS},0.92)`;ctx.beginPath();
+  for(const p of P){if(!(p.acc||p.energy>0.3))continue;const r=1.1+p.depth*1.6+p.energy*1.8;ctx.moveTo(p.x+r,p.y);ctx.arc(p.x,p.y,r,0,6.283);}ctx.fill();
+  ctx.globalCompositeOperation='lighter';ctx.fillStyle=`rgba(${acS},0.12)`;ctx.beginPath();
+  for(const p of P){if(!(p.acc||p.energy>0.3))continue;const r=2.6+p.energy*2.4;ctx.moveTo(p.x+r,p.y);ctx.arc(p.x,p.y,r,0,6.283);}ctx.fill();
+
+  if(pulse>0.3){
+    for(const rt of rings){const rr=(now-rt)*0.34, fade=1-(now-rt)/3400;
+      ctx.strokeStyle=`rgba(${acS},${0.20*pulse*fade})`;ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(cx,cy,rr,0,6.283);ctx.stroke();}
+    ctx.fillStyle=`rgba(${acS},${0.6*pulse})`;ctx.beginPath();ctx.arc(cx,cy,2.6+Math.sin(now*0.004)*1.2,0,6.283);ctx.fill();
+  }
+
+  ctx.globalCompositeOperation='source-over';
+  const v=ctx.createRadialGradient(W*0.5,H*0.5,Math.min(W,H)*0.32,W*0.5,H*0.5,Math.max(W,H)*0.76);
+  v.addColorStop(0,`rgba(${rgb(deep)},0)`);v.addColorStop(1,`rgba(${rgb(deep)},0.5)`);ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+  const figLum=0.3*fig[0]+0.59*fig[1]+0.11*fig[2];
+  const shade=figLum>140?deep:light, sa=figLum>140?0.44:0.34;
+  const gx1=TL?W*0.60:W*0.40;
+  const cgrad=ctx.createLinearGradient(TL?0:W,0,gx1,0);
+  cgrad.addColorStop(0,`rgba(${rgb(shade)},${sa})`);cgrad.addColorStop(1,`rgba(${rgb(shade)},0)`);
+  ctx.fillStyle=cgrad; if(TL)ctx.fillRect(0,0,W*0.60,H); else ctx.fillRect(W*0.40,0,W*0.60,H);
+
+  surface();
+  autoOpenLayers();
+  requestAnimationFrame(loop);
+}
+
+/* ---- signal: read today's from the live feed; built-in is the fallback ---- */
+function todayIdx(){const d=new Date().getDay();return (d>=1&&d<=5)?d-1:4;}
+const MONTHS=["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+const DAYS=["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+const FEED_URL="https://raw.githubusercontent.com/chadwick-is-love/gabes-signal/main/signals.json";
+function localISO(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function paintSignal(s){
+  document.getElementById('sig-day').textContent=s.day||"";
+  document.getElementById('sig-cat').textContent=s.cat||"";
+  document.getElementById('sig-hook').textContent=s.hook||"";
+  document.getElementById('sig-a').textContent=s.line||"";
+  const dt=new Date();
+  document.getElementById('sig-date').textContent=dt.getDate()+" "+MONTHS[dt.getMonth()];
+  const t=performance.now(); rings.push(t); lastRing=t;     // transmission
+}
+function pickToday(list){
+  if(!Array.isArray(list)||!list.length)return null;
+  const today=localISO(), dated=list.filter(s=>s&&s.date);
+  const exact=dated.find(s=>s.date===today); if(exact)return exact;
+  const past=dated.filter(s=>s.date<=today).sort((a,b)=>a.date<b.date?1:-1); if(past.length)return past[0];
+  return list.find(s=>s&&s.day===DAYS[new Date().getDay()])||list[list.length-1];
+}
+(function renderTodaySignal(){
+  paintSignal(SIGNALS[todayIdx()]);                          // built-in first: never empty, never wrong on no-JS
+  fetch(FEED_URL,{cache:"no-store"})
+    .then(r=>r.ok?r.json():Promise.reject(r.status))
+    .then(d=>{const s=pickToday(d&&d.signals?d.signals:d);if(s)paintSignal(s);})
+    .catch(()=>{});                                          // any failure: keep the built-in
+})();
+
+// the funnel is a click toy — flip it from the toggle OR the headline
+const fn=document.getElementById('funnel'), fnToggle=document.getElementById('funnelToggle'), fnHead=document.getElementById('funnelHead');
+function flipFunnel(){const o=fn.classList.toggle('open');fnToggle.setAttribute('aria-expanded',o);fnHead.classList.toggle('flipped',o);measure();}
+fnToggle.addEventListener('click',flipFunnel);
+fnHead.addEventListener('click',flipFunnel);
+
+// operating layer: hover lights a stratum; scrolling opens the descriptions
+const layerEls=[...document.querySelectorAll('#layers .layer')];
+layerEls.forEach(el=>{
+  el.addEventListener('pointerenter',()=>{HOVL=+el.dataset.l;el.classList.add('on');});
+  el.addEventListener('pointerleave',()=>{HOVL=-1;el.classList.remove('on');});});
+const OPSEC=4;   // index of the operating-layer section
+function autoOpenLayers(){
+  if(!OFF[OPSEC])return;
+  const lp=clamp((smoothY+H*0.5 - OFF[OPSEC].top)/OFF[OPSEC].h,0,1);
+  const openN=Math.round(clamp((lp-0.10)/0.5,0,1)*layerEls.length);
+  layerEls.forEach((el,k)=>el.classList.toggle('open',k<openN));
+}
+
+/* ---- the skill library: 19 skills, 4 categories. accordion <-> clusters ---- */
+const CATS=[
+  {name:"business operating system", tag:"run the business from claude", skills:[
+    {n:"business setup", d:"onboards a business through a guided interview, so claude never needs re-briefing.", p:"a reusable business context pack"},
+    {n:"context ingest", d:"drop in documents, links, or exports. claude reads them and files what matters automatically.", p:"a searchable company knowledge base"},
+    {n:"pod mapper", d:"breaks the business into its core functions and maps the exact workflow inside each.", p:"a workflow map of the whole business"},
+    {n:"ai task audit", d:"scores every recurring task: automate, assist, or keep human. honest about what should stay manual.", p:"a prioritized automation hit list"},
+    {n:"swot analysis", d:"combines your own context with live outside research into a clear strategic read.", p:"a strategic swot report"},
+    {n:"daily brief", d:"pulls calendar, inbox, and notes into one short morning briefing: what's on, what's slipping.", p:"a daily executive brief"}]},
+  {name:"sales & growth", tag:"find the work, then win it", skills:[
+    {n:"ai opportunity audit", d:"the flagship. top automation opportunities, what each is worth, and a phased plan to capture them.", p:"a client-ready ai audit report"},
+    {n:"proposal engine", d:"turns discovery notes or a transcript into a full proposal. strategy up front, no filler.", p:"a finished proposal, ready to send"},
+    {n:"assessment designer", d:"builds a diagnostic quiz: questions, scoring, result types, and the feedback each one gets.", p:"a complete assessment + feedback library"},
+    {n:"lead research", d:"researches a prospect and returns a tight brief: who they are, fit score, the angle, the next move.", p:"a scored lead brief"},
+    {n:"outreach sequence", d:"writes an escalating sequence in your voice, with an offer ladder, that reads like a person.", p:"a multi-touch outreach sequence"}]},
+  {name:"content & brand", tag:"stay visible and on-voice without a content team", skills:[
+    {n:"brand voice engine", d:"captures a brand's real voice into a profile, then writes anything in it.", p:"a reusable voice profile + on-voice content"},
+    {n:"anti-ai writing", d:"scans for the tells that make copy read like a machine, then rewrites it to sound human.", p:"cleaned, human-sounding copy + an audit"},
+    {n:"multi-platform repurpose", d:"takes one idea and rethinks it for each channel — not copy-paste, rebuilt for how people read.", p:"a full set of platform-native posts"},
+    {n:"thought-leadership engine", d:"a daily on-voice post plus the people and topics worth engaging that day.", p:"a daily post + targeted engagement"},
+    {n:"newsletter engine", d:"writes a long-form letter from a theme, aware of what was already sent so it never repeats.", p:"a finished newsletter draft"},
+    {n:"deck builder", d:"turns a document or notes into a structured deck, every slide's copy and order, in your design language.", p:"a complete slide-deck draft"}]},
+  {name:"compliance & intelligence", tag:"protect the brand, capture the room", skills:[
+    {n:"compliance review", d:"reviews copy against the rules of regulated industries, flags each issue, and rewrites it compliant but persuasive.", p:"a flagged report + compliant rewrites"},
+    {n:"meeting to deliverable", d:"turns a call transcript into a summary, the decisions, the action items, and a ready-to-send follow-up.", p:"a meeting summary + follow-up draft"}]},
+];
+// compact category rows in the room; the skills open in a drawer (no scroll strain)
+let OPENCAT=-1;
+const cz=document.getElementById('cats');
+const drawer=document.getElementById('skillDrawer'), scrim=document.getElementById('drawerScrim');
+const dHead=drawer.querySelector('.dhead'), dTag=drawer.querySelector('.dtag'), dBody=document.getElementById('drawerBody');
+function openCat(ci){
+  const c=CATS[ci];
+  dHead.textContent=c.name;
+  dTag.textContent=c.tag+'  ·  '+c.skills.length+' skills';
+  dBody.innerHTML=c.skills.map((s,k)=>`<div class="skill"><div class="skill-row"><span class="snum">${String(k+1).padStart(2,'0')}</span><span class="sn">${s.n}</span></div><div class="sd">${s.d}</div><div class="sprod">${s.p}</div></div>`).join('');
+  drawer.classList.add('open');scrim.classList.add('on');drawer.setAttribute('aria-hidden','false');drawer.scrollTop=0;
+  document.documentElement.style.overflow='hidden';
+  OPENCAT=ci;HOVC=ci;
+}
+function closeDrawer(){drawer.classList.remove('open');scrim.classList.remove('on');drawer.setAttribute('aria-hidden','true');
+  document.documentElement.style.overflow='';OPENCAT=-1;HOVC=-1;}
+CATS.forEach((c,ci)=>{
+  const el=document.createElement('button'); el.className='catrow';
+  el.innerHTML=`<span class="ch"><span class="ci">0${ci+1}</span><span class="cn">${c.name}</span><span class="cc">${c.skills.length} skills</span><span class="cg">&rarr;</span></span><span class="ct2">${c.tag}</span>`;
+  el.addEventListener('pointerenter',()=>{if(OPENCAT<0)HOVC=ci;});
+  el.addEventListener('pointerleave',()=>{if(OPENCAT<0)HOVC=-1;});
+  el.addEventListener('click',()=>openCat(ci));
+  cz.appendChild(el);
+});
+document.getElementById('drawerClose').addEventListener('click',closeDrawer);
+scrim.addEventListener('click',closeDrawer);
+drawer.addEventListener('click',closeDrawer);   // click anywhere in the drawer closes (it's read-only)
+addEventListener('keydown',e=>{if(e.key==='Escape'&&OPENCAT>=0)closeDrawer();});
+
+// greatest hits — the field archive
+const HITS=[
+  ["the follow-up gap","the deal was never lost. it was left on read for nine days, then politely went elsewhere."],
+  ["the founder memory problem","the company's most important system is one person's recollection, and it doesn't back up."],
+  ["the dashboard nobody opened","built in a sprint, admired in a demo, last viewed during the demo."],
+  ["the automation that made more work","saved four minutes, created a full-time job called checking the automation."],
+  ["the lead leak","leads come in the front and exit through a form field nobody owns."],
+  ["the crm as decorative furniture","everyone pays for it, nobody trusts it, the real data lives in someone's head."],
+  ["the meeting that was a button","forty minutes, six people, one decision a checkbox could have made."],
+  ["the tool stack with a drinking problem","eleven subscriptions doing the work of three, none on speaking terms."],
+  ["the beautiful brand with no spine","gorgeous on the outside, held together by heroics on the inside."],
+  ["where revenue goes to die","sales to delivery to billing. money evaporates at every door."],
+];
+const hz=document.getElementById('hits');
+HITS.forEach(([t,d])=>{const el=document.createElement('div');el.className='hit';
+  el.innerHTML=`<div class="ht">${t}</div><div class="hd">${d}</div>`;hz.appendChild(el);});
+
+// work with us — naming the mess resolves the organism into a system
+const messin=document.getElementById('messin'), messform=document.getElementById('messform');
+if(messin){
+  messin.addEventListener('focus',()=>{RTARGET=Math.max(RTARGET,0.7);});
+  messin.addEventListener('input',()=>{RTARGET=messin.value.trim()?clamp(0.55+messin.value.length/60,0.55,1):0.4;});
+  messin.addEventListener('blur',()=>{if(!messin.value.trim()&&!messform.classList.contains('done'))RTARGET=0;});
+  messform.addEventListener('submit',e=>{e.preventDefault();messform.classList.add('done');RTARGET=1;});
+}
+
+document.querySelectorAll('a[href=\"#\"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+
+size();onScroll();requestAnimationFrame(loop);
+</script>
+</body>
+</html>

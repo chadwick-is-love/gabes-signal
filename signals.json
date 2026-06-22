@@ -1,0 +1,41 @@
+{
+  "updated": "2026-06-22",
+  "note": "the gabes daily signal feed. the homepage reads the entry dated today (falls back to the most recent on or before today). one weekday a day, mon-fri. nothing here ships unapproved.",
+  "signals": [
+    {
+      "date": "2026-06-22",
+      "day": "monday",
+      "cat": "the warning",
+      "hook": "your voice is now a password.",
+      "line": "thirty seconds of you on a podcast is enough to empty an account in your name."
+    },
+    {
+      "date": "2026-06-23",
+      "day": "tuesday",
+      "cat": "the gift",
+      "hook": "“i thought you had it” is not a workflow.",
+      "line": "it is where revenue goes to die quietly."
+    },
+    {
+      "date": "2026-06-24",
+      "day": "wednesday",
+      "cat": "the roast",
+      "hook": "it will summarize the meeting you were already in.",
+      "line": "it automated the whole meeting except the part where someone does the work."
+    },
+    {
+      "date": "2026-06-25",
+      "day": "thursday",
+      "cat": "the market",
+      "hook": "your next hire does not need a desk.",
+      "line": "the agents are becoming staff. the winners already chose which decisions a machine gets to own."
+    },
+    {
+      "date": "2026-06-26",
+      "day": "friday",
+      "cat": "the wide net",
+      "hook": "you do not have an ai problem. you have a spreadsheet problem.",
+      "line": "the business still runs on memory, meetings, and one tired person nobody put on the org chart."
+    }
+  ]
+}
